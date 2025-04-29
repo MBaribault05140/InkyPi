@@ -11,7 +11,7 @@ API_KEY = "29ea29d7-34d4-499c-80a1-3fe18bcdd204"
 STATION_ID = "39534"
 LAT = "38.8951"
 LON = "-77.0364"
-AIR_QUALITY_API_KEY = "YOUR_OPENWEATHERMAP_API_KEY"
+AIR_QUALITY_API_KEY = "44927775ca927b99ec49364e9a19023e"
 
 WEATHER_URL = "https://swd.weatherflow.com/swd/rest/better_forecast?station_id={station_id}&units_temp=f&units_wind=mph&units_pressure=mb&units_precip=in&units_distance=mi&api_key={api_key}"
 AIR_QUALITY_URL = "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={api_key}"
