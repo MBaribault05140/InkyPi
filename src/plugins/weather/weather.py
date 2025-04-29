@@ -7,7 +7,7 @@ from plugins.base_plugin.base_plugin import BasePlugin
 
 logger = logging.getLogger(__name__)
 
-WEATHER_URL = "https://swd.weatherflow.com/swd/rest/better_forecast?station_id={station_id}&units_temp=c&units_wind=mps&units_pressure=mb&units_precip=mm&units_distance=km&api_key={api_key}"
+WEATHER_URL = "https://swd.weatherflow.com/swd/rest/better_forecast?station_id=39534&units_temp=f&units_wind=mph&units_pressure=mb&units_precip=in&units_distance=mi&api_key=29ea29d7-34d4-499c-80a1-3fe18bcdd204"
 
 class Weather(BasePlugin):
     def generate_settings_template(self):
