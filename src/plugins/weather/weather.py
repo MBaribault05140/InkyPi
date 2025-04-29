@@ -51,12 +51,12 @@ class Weather(BasePlugin):
 
         data = {
             "current_date": dt.strftime("%A, %B %d – %-I:%M %p"),
-            "location": f"Station {weather_data.get('station_id', 'Unknown')}",
+            "location": "Washington, DC",
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
             "current_temperature": str(round(current.get("air_temperature"))),
             "feels_like": str(round(current.get("feels_like", current.get("air_temperature")))),
-            "temperature_unit": "°C",
-            "units": "metric",
+            "temperature_unit": "°F",
+            "units": "imperial",
             "forecast": self.parse_forecast(weather_data.get("forecast", {}).get("daily", []), tz),
             "hourly_forecast": self.parse_hourly(weather_data.get("forecast", {}).get("hourly", []), tz)
         }
