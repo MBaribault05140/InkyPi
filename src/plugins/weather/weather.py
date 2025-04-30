@@ -18,8 +18,8 @@ class WeatherPlugin:
             dt = datetime.fromtimestamp(day.get("day_start_local", 0), tz=timezone.utc).astimezone(tz)
             forecast.append({
                 "day": dt.strftime("%a"),
-                "high_temp": int(day.get("air_temp_high", 0)),  # Capture high temperature
-                "low_temp": int(day.get("air_temp_low", 0)),    # Capture low temperature
+                "high": int(day.get("air_temp_high", 0)),  # Capture high temperature
+                "low": int(day.get("air_temp_low", 0)),    # Capture low temperature
                 "icon": self.get_plugin_dir(f"icons/{day.get('icon', 'default')}.png")
             })
         return forecast
