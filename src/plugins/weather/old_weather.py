@@ -117,16 +117,6 @@ class Weather(BasePlugin):
 
         if daily_forecast:
             today = daily_forecast[0]
-            if today.get("air_temp_high") and today.get("air_temp_low"):
-                high = today.get("air_temp_high")
-                low = today.get("air_temp_low")
-                data_points.append({
-                    "label": "High/Low",
-                    "measurement": f"High: {high}°F / Low: {low}°F",
-                    "unit": "",
-                    "icon": self.get_plugin_dir('icons/high-low.png')  # You can choose or add an appropriate icon
-                })
-
             if today.get("sunrise"):
                 sunrise = datetime.fromtimestamp(today["sunrise"], tz=timezone.utc).astimezone(tz)
                 data_points.append({
