@@ -1,3 +1,4 @@
+
 {% extends "plugin.html" %}
 
 {% block content %}
@@ -16,6 +17,8 @@
         <div class="current-weather">
           <div class="current-temp">{{ current_temperature }}<span class="temperature-unit">{{temperature_unit}}</span></div>
           <div class="feels-like">Feels Like {{ feels_like }}{% if units != "standard" %}°{% endif %}</div>
+          <!-- High and Low Temperatures -->
+          <div class="high-low-temps">High: {{ high_temp }}°F / Low: {{ low_temp }}°F</div>
         </div>
     </div>
 
@@ -73,7 +76,7 @@
     // Extract hourly temperature and labels from template variables
     const labels = [{% for hour in hourly_forecast %}"{{ hour.time }}"{% if not loop.last %}, {% endif %}{% endfor %}];
     const temperatures = [{% for hour in hourly_forecast %}{{ hour.temperature }}{% if not loop.last %}, {% endif %}{% endfor %}];
-    const precipitation = [{% for hour in hourly_forecast %}{{ hour.precipitiation * 100}}{% if not loop.last %}, {% endif %}{% endfor %}]; // Convert to percentage
+    const precipitation = [{% for hour in hourly_forecast %}{{ hour.precipitation * 100}}{% if not loop.last %}, {% endif %}{% endfor %}]; // Convert to percentage
 
     // Find min and max temperatures
     const minTemp = Math.min(...temperatures);
