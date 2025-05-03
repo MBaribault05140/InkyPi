@@ -90,8 +90,8 @@ class Weather(BasePlugin):
         # Extract High/Low Temperature from the forecast and include it in the data
         if daily:
             today = daily[0]  # Today's forecast (first item in the daily list)
-            high = today.get("air_temp_high", 0)
-            low = today.get("air_temp_low", 0)
+            high = round(today.get("air_temp_high", 0))
+            low = round(today.get("air_temp_low", 0))
             data["high_low_temperature"] = f"High: {high}°F / Low: {low}°F"  # Add this to the data dictionary
 
         return data
