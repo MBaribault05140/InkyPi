@@ -18,7 +18,7 @@
           <div class="current-temp">{{ current_temperature }}<span class="temperature-unit">{{temperature_unit}}</span></div>
           <div class="feels-like">Feels Like {{ feels_like }}{% if units != "standard" %}°{% endif %}</div>
           <!-- High and Low Temperatures -->
-          <div class="feels-like">High: {{ high_temp }}°F / Low: {{ low_temp }}°F</div>
+          <div class="feels-like">{{ high_low_temperature }}</div>
         </div>
     </div>
 
