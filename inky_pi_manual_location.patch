@@ -1,0 +1,58 @@
+diff --git a/src/plugins/weather/settings.html b/src/plugins/weather/settings.html
+index 0000000..0000000
+--- a/src/plugins/weather/settings.html
++++ b/src/plugins/weather/settings.html
+@@ -1,6 +1,7 @@
+ {% extends 'layout.html' %}
+
+ {% block content %}
++  <!-- New: Manual Display Name -->
+   <h1>Weather Plugin Settings</h1>
+   <form method="post">
+     <!-- Existing fields -->
+@@ -27,6 +28,17 @@
+     </select>
+   </div>
+
++  <!-- New: Manual Display Name -->
++  <div class="form-group">
++    <label for="manual_location_name">Display Location Name</label>
++    <input
++      type="text"
++      class="form-control"
++      id="manual_location_name"
++      name="manual_location_name"
++      placeholder="e.g., Home, Office, My Town"
++      value="{{ settings.manual_location_name or '' }}">
++    <small class="form-text text-muted">
++      Whatever you enter here will override the location shown on the e-ink display.
++    </small>
++  </div>
+
+   <button type="submit" class="btn btn-primary">Save Settings</button>
+ </form>
+diff --git a/src/plugins/weather/weather.py b/src/plugins/weather/weather.py
+index 0000000..0000000
+--- a/src/plugins/weather/weather.py
++++ b/src/plugins/weather/weather.py
+@@ -16,6 +16,7 @@ def settings():
+         settings['units'] = form.get('units', 'metric')
++        # New: Manual location override
+         settings['manual_location_name'] = form.get('manual_location_name', '').strip()
+         save_plugin_settings('weather', settings)
+         flash('Weather settings updated.', 'success')
+@@ -26,6 +27,15 @@ def display_weather():
+     weather_data = parse_api_response(api_data)
+
+     # override location name if provided
++    manual = settings.get('manual_location_name', '')
++    if manual:
++        weather_data['location_name'] = manual
++    else:
++        # fallback to API-provided name
++        default_name = api_data.get('name', '')
++        country = api_data.get('sys', {}).get('country', '')
++        weather_data['location_name'] = f"{default_name}, {country}" if country else default_name
++
++    # note: ensure your template uses weather.location_name
+     return render_template('weather.html', weather=weather_data)
