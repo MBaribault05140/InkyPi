@@ -32,8 +32,7 @@ def save_settings():
             "name": form_data.get("deviceName"),
             "orientation": form_data.get("orientation"),
             "timezone": form_data.get("timezoneName"),
-            "plugin_cycle_interval_seconds": plugin_cycle_interval_seconds,
-    "displayLocation": form_data.get("displayLocation"),
+            "plugin_cycle_interval_seconds": plugin_cycle_interval_seconds
         }
         device_config.update_config(settings)
     except RuntimeError as e:
