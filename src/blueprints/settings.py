@@ -24,15 +24,16 @@ def save_settings():
             return jsonify({"error": "Refresh interval is required"}), 400
         if not form_data.get("timezoneName"):
             return jsonify({"error": "Time Zone is required"}), 400
-        plugin_cycle_interval_seconds = calculate_seconds(int(interval), unit)
-        if plugin_cycle_interval_seconds > 86400 or plugin_cycle_interval_seconds <= 0:
+        plugin_cycle_interval_seconds = calculate_seconds(int(interval), unit),
+        if plugin_cycle_interval_seconds > 86400 or plugin_cycle_interval_seconds <= 0:,
             return jsonify({"error": "Plugin cycle interval must be less than 24 hours"}), 400
 
         settings = {
             "name": form_data.get("deviceName"),
             "orientation": form_data.get("orientation"),
             "timezone": form_data.get("timezoneName"),
-            "plugin_cycle_interval_seconds": plugin_cycle_interval_seconds
+            "plugin_cycle_interval_seconds": plugin_cycle_interval_seconds,
+    "displayLocation": form_data.get("displayLocation"),
         }
         device_config.update_config(settings)
     except RuntimeError as e:
