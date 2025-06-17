@@ -36,6 +36,9 @@ class Weather(BasePlugin):
         tz = pytz.timezone(timezone_str)
         template_params = self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz)
         template_params["plugin_settings"] = settings
+        # Override location if custom displayLocation provided
+        if settings.get("displayLocation"):
+            template_params["location"] = settings.get("displayLocation")
 
         image = self.render_image(dimensions, "weather.html", "weather.css", template_params)
         if not image:
