@@ -62,7 +62,9 @@ class Weather(BasePlugin):
 
         timezone_str = device_config.get_config("timezone", default="America/New_York")
         tz = pytz.timezone(timezone_str)
-        template_params = self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz, current_dt)
+        template_params = {}
+        template_params["timestamp_override"] = current_dt.strftime("%A, %B %d – %-I:%M %p") if current_dt else None
+        template_params.update(self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz, current_dt, template_params))
         template_params["custom_location_name"] = settings.get("locationName") or template_params["location"]
         template_params["style"] = settings.get("style", "no-frame")
         template_params["backgroundColor"] = settings.get("backgroundColor", "#000000")
@@ -129,7 +131,7 @@ class Weather(BasePlugin):
                 return visibility / 1609.34  # meters to miles
         return 10  # fallback if visibility missing
 
-    def parse_weather_data(self, weather_data, aqi_data, visibility_miles, tz, current_dt=None):
+    def parse_weather_data(self, weather_data, aqi_data, visibility_miles, tz, current_dt=None, template_params=None):
         current = weather_data.get("current_conditions", {})
         daily = weather_data.get("forecast", {}).get("daily", [])
         dt = current_dt or datetime.now(tz)
@@ -141,7 +143,7 @@ class Weather(BasePlugin):
 
         # Use actual current time to prevent displaying the stale forecast time
         data = {
-            "current_date": dt.strftime("%A, %B %d – %-I:%M %p"),
+            "current_date": template_params.get("timestamp_override", dt.strftime("%A, %B %d – %-I:%M %p")),
             "location": "Washington, DC",  # fallback name
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
             "current_temperature": str(round(current_temperature)),
