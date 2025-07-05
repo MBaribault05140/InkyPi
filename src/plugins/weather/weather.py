@@ -23,12 +23,12 @@ class Weather(BasePlugin):
             if response.ok:
                 data = response.json()
                 obs = data.get("obs", [])
-                if obs and len(obs[0]) >= 20:
+                if obs and isinstance(obs[0], dict):
                     return {
-                        "air_temperature": obs[0][7],
-                        "feels_like": obs[0][19],
-                        "station_pressure": obs[0][13],
-                        "wind_avg": round(obs[0][14] * 2.23694, 1)  # m/s to mph
+                        "air_temperature": obs[0].get("air_temperature"),
+                        "feels_like": obs[0].get("feels_like"),
+                        "station_pressure": obs[0].get("station_pressure"),
+                        "wind_avg": obs[0].get("wind_avg")
                     }
             logger.warning("Failed to retrieve observation data from Tempest.")
         except Exception as e:
