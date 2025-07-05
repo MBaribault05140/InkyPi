@@ -13,16 +13,6 @@
     </div>
     <button type="button" id="openMap" class="action-button compact">Select Location</button>
 </div>
-<div class="form-group">
-    <label for="displayLocation" class="form-label">Location Name:</label>
-    <input type="text"
-           id="displayLocation"
-           name="displayLocation"
-           placeholder="Enter location name"
-           value="{{ plugin_settings.displayLocation or '' }}"
-           class="form-input">
-</div>
-
 
 <div class="form-group">
     <label for="units" class="form-label">Units:</label>
@@ -123,7 +113,6 @@
             document.getElementById('displayForecast').value = pluginSettings.displayForecast;
 
             document.getElementById('forecastDays').value = pluginSettings.forecastDays;
-            document.getElementById('displayLocation').value = pluginSettings.displayLocation || '';
         } else {
             // set default values
             document.getElementById('units').value = "imperial";
@@ -136,7 +125,6 @@
             document.getElementById('displayForecast').value = "true";
 
             document.getElementById('forecastDays').value = 7
-            document.getElementById('displayLocation').value = '';
         }
     });
 </script>
