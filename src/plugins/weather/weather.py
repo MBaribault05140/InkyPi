@@ -6,9 +6,9 @@ from plugins.base_plugin.base_plugin import BasePlugin
 
 logger = logging.getLogger(__name__)
 
-API_KEY = "29ea29d7-34d4-499c-80a1-3fe18bcdd204"
+API_KEY = "29ea29d7-34d4-499c-80a1-3fe18bcdd204"  # <- confirmed as the correct bearer token
 STATION_ID = "39534"
-AIR_QUALITY_API_KEY = "44927775ca927b99ec49364e9a19023e"
+AIR_QUALITY_API_KEY = "41c25e7b5b794dc7a8a11284b07b26e2"
 
 WEATHER_URL = "https://swd.weatherflow.com/swd/rest/better_forecast?station_id={station_id}&units_temp=f&units_wind=mph&units_pressure=mb&units_precip=in&units_distance=mi&api_key={api_key}"
 AIR_QUALITY_URL = "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={api_key}"
