@@ -256,7 +256,7 @@ class PlaylistRefresh(RefreshAction):
         if self.plugin_instance.should_refresh(current_dt):
             logger.info(f"Refreshing plugin instance. | plugin_instance: '{self.plugin_instance.name}'") 
             # Generate a new image
-            image = plugin.generate_image(self.plugin_instance.settings, device_config)
+            image = plugin.generate_image(self.plugin_instance.settings, device_config, current_dt=current_dt)
             image.save(plugin_image_path)
             self.plugin_instance.latest_refresh_time = current_dt.isoformat()
         else:
