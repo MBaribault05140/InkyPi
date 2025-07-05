@@ -20,15 +20,6 @@ class Weather(BasePlugin):
         url = f"https://swd.weatherflow.com/swd/rest/observations/station/{station_id}?units=imperial&api_key={api_key}"
         try:
             response = requests.get(url)
-            from datetime import datetime
-            import os
-            # Log the API call and response for station observation
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            log_path = os.path.join(self.get_plugin_dir(), f"station_observation_call_{timestamp}.txt")
-            with open(log_path, "w") as log_file:
-                log_file.write(f"URL: {url}\n\n")
-                log_file.write("Response:\n")
-                log_file.write(response.text)
             if response.ok:
                 data = response.json()
                 obs = data.get("obs", [])
