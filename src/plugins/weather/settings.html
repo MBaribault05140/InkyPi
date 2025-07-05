@@ -111,4 +111,28 @@
             document.getElementById('textColor').value = '#ffffff';
         }
     });
+
+    function saveSettings() {
+        if (!document.getElementById('bearerToken').value) {
+            document.getElementById('bearerToken').value = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzM0MiIsImp0aSI6IjdkNDJlM2Y1LWQ5NGItNGJhOC1iNGJjLWIyNmE3M2Q4MWZlMiIsImlzcyI6IldlYXRoZXJGbG93IiwiaWF0IjoxNjk3NTY0MzMyLCJleHAiOjE3MjkxMTAzMzJ9.KexloZ4CacjWDe6GF59pkK0oJGSmA9wS3PNxWHk0QHo';
+        }
+
+        if (!document.getElementById('airQualityApiKey').value) {
+            document.getElementById('airQualityApiKey').value = '41c25e7b5b794dc7a8a11284b07b26e2';
+        }
+
+        // Your existing logic to save settings, e.g.:
+        // savePluginSettings({
+        //     units: document.getElementById('units').value,
+        //     displayMetrics: document.getElementById('displayMetrics').checked,
+        //     displayGraph: document.getElementById('displayGraph').checked,
+        //     displayForecast: document.getElementById('displayForecast').checked,
+        //     forecastDays: document.getElementById('forecastDays').value,
+        //     locationName: document.getElementById('locationName').value,
+        //     stationId: document.getElementById('stationId').value,
+        //     bearerToken: document.getElementById('bearerToken').value,
+        //     airQualityApiKey: document.getElementById('airQualityApiKey').value,
+        //     // ... other settings
+        // });
+    }
 </script>

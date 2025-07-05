@@ -21,10 +21,10 @@ class Weather(BasePlugin):
         return template_params
 
     def generate_image(self, settings, device_config):
-        station_id = settings.get("stationId") or STATION_ID
-        api_key = settings.get("bearerToken") or API_KEY
+        station_id = settings.get("stationId").strip() if settings.get("stationId") else STATION_ID
+        api_key = settings.get("bearerToken").strip() if settings.get("bearerToken") else API_KEY
         logger.info(f"Loaded bearerToken from settings: {settings.get('bearerToken')}")
-        air_quality_api_key = settings.get("airQualityApiKey") or AIR_QUALITY_API_KEY
+        air_quality_api_key = settings.get("airQualityApiKey").strip() if settings.get("airQualityApiKey") else AIR_QUALITY_API_KEY
         logger.info(f"Using Tempest API Key: {api_key}")
         logger.info(f"Using Air Quality API Key: {air_quality_api_key}")
         weather_data = self.get_weather_data(api_key, station_id)
