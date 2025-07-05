@@ -63,7 +63,9 @@ class Weather(BasePlugin):
 
     def get_air_quality_data(self, lat, lon, api_key):
         url = AIR_QUALITY_URL.format(lat=lat, lon=lon, api_key=api_key)
+        logger.info(f"Calling air quality API: {url}")
         response = requests.get(url)
+        logger.info(f"Air quality API raw response: {response.text}")
         if not 200 <= response.status_code < 300:
             logger.error(f"Failed to retrieve air quality data: {response.content}")
             raise RuntimeError("Failed to retrieve air quality data.")
