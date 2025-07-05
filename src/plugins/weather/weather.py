@@ -16,7 +16,7 @@ CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?lat={lat}&
 STATION_INFO_URL = "https://swd.weatherflow.com/swd/rest/stations?station_id={station_id}&api_key={api_key}"
 
 class Weather(BasePlugin):
-    def get_observed_temp_and_feels_like(self, station_id, api_key):
+    def get_station_observation_data(self, station_id, api_key):
         url = f"https://swd.weatherflow.com/swd/rest/observations/station/{station_id}?api_key={api_key}"
         try:
             response = requests.get(url)
@@ -24,13 +24,17 @@ class Weather(BasePlugin):
                 data = response.json()
                 obs = data.get("obs", [])
                 if obs and len(obs[0]) >= 20:
-                    air_temp = obs[0][7]
-                    feels_like = obs[0][19]
-                    return air_temp, feels_like
-            logger.warning("Failed to retrieve observed temperature or feels like from observations API.")
+                    return {
+                        "air_temperature": obs[0][7],
+                        "feels_like": obs[0][19],
+                        "station_pressure": obs[0][13],
+                        "wind_avg": round(obs[0][14] * 2.23694, 1)  # m/s to mph
+                    }
+            logger.warning("Failed to retrieve observation data from Tempest.")
         except Exception as e:
-            logger.exception("Error fetching observations data")
-        return None, None
+            logger.exception("Error fetching station observation data")
+        return {}
+
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
         template_params['style_settings'] = True
@@ -130,9 +134,9 @@ class Weather(BasePlugin):
         dt = datetime.fromtimestamp(current.get("time", 0), tz=timezone.utc).astimezone(tz)
         current_icon = current.get("icon", "default")
 
-        obs_temp, obs_feels = self.get_observed_temp_and_feels_like(STATION_ID, API_KEY)
-        current_temperature = obs_temp if obs_temp is not None else current.get("air_temperature", 0)
-        feels_like = obs_feels if obs_feels is not None else current.get("feels_like", current.get("air_temperature", 0))
+        obs_data = self.get_station_observation_data(STATION_ID, API_KEY)
+        current_temperature = obs_data.get("air_temperature", current.get("air_temperature", 0))
+        feels_like = obs_data.get("feels_like", current.get("feels_like", current_temperature))
 
         data = {
             "current_date": dt.strftime("%A, %B %d – %-I:%M %p"),
@@ -144,7 +148,7 @@ class Weather(BasePlugin):
             "units": "imperial",
             "forecast": self.parse_forecast(daily, tz),
             "hourly_forecast": self.parse_hourly(weather_data.get("forecast", {}).get("hourly", []), tz),
-            "data_points": self.parse_data_points(current, daily, aqi_data, visibility_miles, tz)
+            "data_points": self.parse_data_points(current, daily, aqi_data, visibility_miles, tz, obs_data)
         }
 
         # Extract High/Low Temperature from the forecast and include it in the data
@@ -179,7 +183,7 @@ class Weather(BasePlugin):
             })
         return hourly
 
-    def parse_data_points(self, current, daily_forecast, aqi_data, visibility_miles, tz):
+    def parse_data_points(self, current, daily_forecast, aqi_data, visibility_miles, tz, obs_data):
         data_points = []
 
         if daily_forecast:
@@ -202,10 +206,10 @@ class Weather(BasePlugin):
                 })
 
         # Add data points for wind, humidity, pressure, UV, visibility, and air quality
-        if current.get("wind_avg") is not None:
+        if obs_data.get("wind_avg") is not None:
             data_points.append({
                 "label": "Wind",
-                "measurement": current["wind_avg"],
+                "measurement": obs_data["wind_avg"],
                 "unit": "mph",
                 "icon": self.get_plugin_dir('icons/wind.png')
             })
@@ -218,10 +222,10 @@ class Weather(BasePlugin):
                 "icon": self.get_plugin_dir('icons/humidity.png')
             })
 
-        if current.get("station_pressure") is not None:
+        if obs_data.get("station_pressure") is not None:
             data_points.append({
                 "label": "Pressure",
-                "measurement": current["station_pressure"],
+                "measurement": obs_data["station_pressure"],
                 "unit": "mb",
                 "icon": self.get_plugin_dir('icons/pressure.png')
             })
