@@ -76,13 +76,11 @@ class RefreshTask:
 
                     interval_seconds = self.device_config.get_config("scheduler_sleep_time")
                     interval_minutes = interval_seconds // 60
-                    now = datetime.now().replace(second=30, microsecond=0)
-                    next_minute = (now.minute // interval_minutes + 1) * interval_minutes
-                    if next_minute >= 60:
-                        next_time = now.replace(hour=(now.hour + 1) % 24, minute=0, second=0, microsecond=0)
-                    else:
-                        next_time = now.replace(minute=next_minute, second=0, microsecond=0)
-                    sleep_seconds = (next_time - now).total_seconds()
+                    now = datetime.now().replace(second=0, microsecond=0)
+                    seconds_since_hour = now.minute * 60 + now.second
+                    next_seconds = ((seconds_since_hour // interval_seconds) + 1) * interval_seconds
+                    next_time = now.replace(minute=0, second=0) + timedelta(seconds=next_seconds)
+                    sleep_seconds = (next_time - datetime.now()).total_seconds()
                     self.condition.wait(timeout=sleep_seconds)
                     self.refresh_result = {}
                     self.refresh_event.clear()
