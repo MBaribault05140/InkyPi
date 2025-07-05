@@ -11,6 +11,24 @@
 </div>
 
 <div class="form-group">
+    <label for="style" class="form-label">Style:</label>
+    <select id="style" name="style" class="form-input">
+        <option value="no-frame">No Frame</option>
+        <option value="frame">Frame</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="backgroundColor" class="form-label">Background Color:</label>
+    <input type="color" id="backgroundColor" name="backgroundColor" class="form-input" />
+</div>
+
+<div class="form-group">
+    <label for="textColor" class="form-label">Text Color:</label>
+    <input type="color" id="textColor" name="textColor" class="form-input" />
+</div>
+
+<div class="form-group">
     <label for="locationName" class="form-label">Location Name:</label>
     <input type="text" id="locationName" name="locationName" class="form-input" />
 </div>
@@ -67,6 +85,10 @@
 
             document.getElementById('locationName').value = pluginSettings.locationName || '';
             document.getElementById('stationId').value = pluginSettings.stationId || '39534';
+
+            document.getElementById('style').value = pluginSettings.style || 'no-frame';
+            document.getElementById('backgroundColor').value = pluginSettings.backgroundColor || '#000000';
+            document.getElementById('textColor').value = pluginSettings.textColor || '#ffffff';
         } else {
             // set default values
             document.getElementById('units').value = "imperial";
@@ -82,6 +104,10 @@
 
             document.getElementById('locationName').value = '';
             document.getElementById('stationId').value = '39534';
+
+            document.getElementById('style').value = 'no-frame';
+            document.getElementById('backgroundColor').value = '#000000';
+            document.getElementById('textColor').value = '#ffffff';
         }
     });
 </script>
