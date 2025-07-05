@@ -8,8 +8,6 @@ logger = logging.getLogger(__name__)
 
 API_KEY = "29ea29d7-34d4-499c-80a1-3fe18bcdd204"
 STATION_ID = "39534"
-LAT = "38.8951"
-LON = "-77.0364"
 AIR_QUALITY_API_KEY = "44927775ca927b99ec49364e9a19023e"
 
 WEATHER_URL = "https://swd.weatherflow.com/swd/rest/better_forecast?station_id={station_id}&units_temp=f&units_wind=mph&units_pressure=mb&units_precip=in&units_distance=mi&api_key={api_key}"
@@ -25,8 +23,12 @@ class Weather(BasePlugin):
     def generate_image(self, settings, device_config):
         station_id = settings.get("stationId", STATION_ID)
         weather_data = self.get_weather_data(API_KEY, station_id)
-        aqi_data = self.get_air_quality_data(AIR_QUALITY_API_KEY)
-        visibility_miles = self.get_current_weather_visibility(AIR_QUALITY_API_KEY)
+        location = weather_data.get("location", {})
+        lat = location.get("latitude")
+        lon = location.get("longitude")
+
+        aqi_data = self.get_air_quality_data(lat, lon, AIR_QUALITY_API_KEY)
+        visibility_miles = self.get_current_weather_visibility(lat, lon, AIR_QUALITY_API_KEY)
 
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":
@@ -51,16 +53,16 @@ class Weather(BasePlugin):
             raise RuntimeError("Failed to retrieve weather data.")
         return response.json()
 
-    def get_air_quality_data(self, api_key):
-        url = AIR_QUALITY_URL.format(lat=LAT, lon=LON, api_key=api_key)
+    def get_air_quality_data(self, lat, lon, api_key):
+        url = AIR_QUALITY_URL.format(lat=lat, lon=lon, api_key=api_key)
         response = requests.get(url)
         if not 200 <= response.status_code < 300:
             logger.error(f"Failed to retrieve air quality data: {response.content}")
             raise RuntimeError("Failed to retrieve air quality data.")
         return response.json()
 
-    def get_current_weather_visibility(self, api_key):
-        url = CURRENT_WEATHER_URL.format(lat=LAT, lon=LON, api_key=api_key)
+    def get_current_weather_visibility(self, lat, lon, api_key):
+        url = CURRENT_WEATHER_URL.format(lat=lat, lon=lon, api_key=api_key)
         response = requests.get(url)
         if response.ok:
             data = response.json()
