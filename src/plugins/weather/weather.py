@@ -79,7 +79,7 @@ class Weather(BasePlugin):
             "location": "Washington, DC",
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
             "current_temperature": str(round(current.get("air_temperature", 0))),
-            "feels_like": f"{round(current.get('feels_like', current.get('air_temperature', 0)))}°F",
+            "feels_like": str(round(current.get("feels_like", current.get("air_temperature", 0)))),
             "temperature_unit": "°F",
             "units": "imperial",
             "forecast": self.parse_forecast(daily, tz),
