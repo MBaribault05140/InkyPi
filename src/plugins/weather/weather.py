@@ -23,13 +23,14 @@ class Weather(BasePlugin):
     def generate_image(self, settings, device_config):
         station_id = settings.get("stationId") or STATION_ID
         api_key = settings.get("bearerToken") or API_KEY
+        air_quality_api_key = settings.get("airQualityApiKey") or AIR_QUALITY_API_KEY
         weather_data = self.get_weather_data(api_key, station_id)
         location = weather_data.get("location", {})
         lat = location.get("latitude")
         lon = location.get("longitude")
 
-        aqi_data = self.get_air_quality_data(lat, lon, AIR_QUALITY_API_KEY)
-        visibility_miles = self.get_current_weather_visibility(lat, lon, AIR_QUALITY_API_KEY)
+        aqi_data = self.get_air_quality_data(lat, lon, air_quality_api_key)
+        visibility_miles = self.get_current_weather_visibility(lat, lon, air_quality_api_key)
 
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":

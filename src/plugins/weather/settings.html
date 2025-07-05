@@ -21,6 +21,11 @@
 </div>
 
 <div class="form-group">
+    <label for="airQualityApiKey" class="form-label">Air Quality API Key:</label>
+    <input type="text" id="airQualityApiKey" name="airQualityApiKey" class="form-input" />
+</div>
+
+<div class="form-group">
     <label for="displayMetrics" class="form-label">Display: </label>
     <div class="form-group">
         <input type="checkbox" id="displayMetrics" name="displayMetrics" onclick="this.value=this.checked ? 'true' : 'false';">
@@ -68,6 +73,8 @@
             document.getElementById('locationName').value = pluginSettings.locationName || '';
             document.getElementById('stationId').value = pluginSettings.stationId || '39534';
 
+            document.getElementById('airQualityApiKey').value = pluginSettings.airQualityApiKey || 'YOUR_AQI_KEY_HERE';
+
             document.getElementById('bearerToken').value = pluginSettings.bearerToken || 'YOUR_DEFAULT_TOKEN_HERE';
 
             document.getElementById('style').value = (pluginSettings.style !== undefined && pluginSettings.style !== null && pluginSettings.style !== '') ? pluginSettings.style : 'no-frame';
@@ -91,6 +98,8 @@
 
             document.getElementById('locationName').value = '';
             document.getElementById('stationId').value = '39534';
+
+            document.getElementById('airQualityApiKey').value = 'YOUR_AQI_KEY_HERE';
 
             document.getElementById('bearerToken').value = 'YOUR_DEFAULT_TOKEN_HERE';
 
