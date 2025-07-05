@@ -134,7 +134,7 @@ class Weather(BasePlugin):
     def parse_weather_data(self, weather_data, aqi_data, visibility_miles, tz, current_dt=None, template_params=None):
         current = weather_data.get("current_conditions", {})
         daily = weather_data.get("forecast", {}).get("daily", [])
-        dt = current_dt or datetime.now(tz)
+        dt = current_dt if current_dt else datetime.now(tz)
         current_icon = current.get("icon", "default")
 
         obs_data = self.get_station_observation_data(STATION_ID, API_KEY)
@@ -143,7 +143,7 @@ class Weather(BasePlugin):
 
         # Use actual current time to prevent displaying the stale forecast time
         data = {
-            "current_date": template_params.get("timestamp_override", dt.strftime("%A, %B %d – %-I:%M %p")),
+            "current_date": current_dt.strftime("%A, %B %d – %-I:%M %p") if current_dt else dt.strftime("%A, %B %d – %-I:%M %p"),
             "location": "Washington, DC",  # fallback name
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
             "current_temperature": str(round(current_temperature)),
