@@ -22,8 +22,6 @@ def plugin_page(plugin_id):
         try:
             plugin = get_plugin_instance(plugin_config)
             template_params = plugin.generate_settings_template()
-            # Ensure plugin_settings is always defined for the template
-            template_params['plugin_settings'] = {}
 
             # retrieve plugin instance from the query parameters if updating existing plugin instance
             plugin_instance_name = request.args.get('instance')
