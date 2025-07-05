@@ -75,9 +75,11 @@ class RefreshTask:
                     from datetime import datetime, timedelta
 
                     interval_seconds = self.device_config.get_config("scheduler_sleep_time")
-                    now = self._get_current_datetime()
-                    next_time = now + timedelta(seconds=interval_seconds)
-                    sleep_seconds = (next_time - datetime.now(pytz.timezone(self.device_config.get_config("timezone", default="UTC")))).total_seconds()
+                    tz = pytz.timezone(self.device_config.get_config("timezone", default="UTC"))
+                    now = datetime.now(tz)
+                    aligned_now = self._get_current_datetime()
+                    next_time = aligned_now + timedelta(seconds=interval_seconds)
+                    sleep_seconds = (next_time - now).total_seconds()
                     logger.info(f"Sleeping until next interval: {next_time.strftime('%Y-%m-%d %H:%M:%S')} | sleep_seconds: {round(sleep_seconds)}")
                     self.condition.wait(timeout=sleep_seconds)
                     self.refresh_result = {}
