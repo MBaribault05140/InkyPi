@@ -67,7 +67,7 @@ class Weather(BasePlugin):
         response = requests.get(url)
         logger.info(f"Air quality API raw response: {response.text}")
         if not 200 <= response.status_code < 300:
-            logger.error(f"Failed to retrieve air quality data: {response.content}")
+            logger.error(f"Air Quality API failed. Status: {response.status_code}, Response: {response.text}")
             raise RuntimeError("Failed to retrieve air quality data.")
 
         try:
