@@ -3,7 +3,7 @@ import os
 import socket
 
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont
 
 logger = logging.getLogger(__name__)
 
@@ -142,19 +142,7 @@ def handle_request_files(request_files, form_data={}):
 
         file_save_dir = resolve_path(os.path.join("static", "images", "saved"))
         file_path = os.path.join(file_save_dir, file_name)
-
-        # Open the image and apply EXIF transformation before saving
-        if extension in {'jpg', 'jpeg'}:
-            try:
-                with Image.open(file) as img:
-                    img = ImageOps.exif_transpose(img)
-                    img.save(file_path)
-            except Exception as e:
-                logger.warn(f"EXIF processing error for {file_name}: {e}")
-                file.save(file_path)
-        else:
-            # Directly save non-JPEG files
-            file.save(file_path)
+        file.save(file_path)
 
         if is_list:
             file_location_map.setdefault(key, [])

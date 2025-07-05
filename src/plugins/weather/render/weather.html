@@ -1,11 +1,10 @@
-
 {% extends "plugin.html" %}
 
 {% block content %}
 <div class="weather-dashboard">
   <!-- Current Date -->
   <div class="header">
-    <div class="location">{{ location }}</div>
+    <div class="location">{{ custom_location_name }}</div>
     <div class="current-date">{{ current_date }}</div>
   </div>
 
@@ -17,8 +16,6 @@
         <div class="current-weather">
           <div class="current-temp">{{ current_temperature }}<span class="temperature-unit">{{temperature_unit}}</span></div>
           <div class="feels-like">Feels Like {{ feels_like }}{% if units != "standard" %}°{% endif %}</div>
-          <!-- High and Low Temperatures -->
-          <div class="feels-like">{{ high_low_temperature }}</div>
         </div>
     </div>
 
@@ -76,14 +73,14 @@
     // Extract hourly temperature and labels from template variables
     const labels = [{% for hour in hourly_forecast %}"{{ hour.time }}"{% if not loop.last %}, {% endif %}{% endfor %}];
     const temperatures = [{% for hour in hourly_forecast %}{{ hour.temperature }}{% if not loop.last %}, {% endif %}{% endfor %}];
-    const precipitation = [{% for hour in hourly_forecast %}{{ hour.precipitation * 100}}{% if not loop.last %}, {% endif %}{% endfor %}]; // Convert to percentage
+    const precipitation = [{% for hour in hourly_forecast %}{{ hour.precipitiation * 100}}{% if not loop.last %}, {% endif %}{% endfor %}]; // Convert to percentage
 
     // Find min and max temperatures
     const minTemp = Math.min(...temperatures);
     var maxTemp = Math.max(...temperatures);
 
-    if (maxTemp - minTemp < 4){
-      maxTemp += 2;
+    if (maxTemp - minTemp < 5){
+      maxTemp += 5;
     }
   
     const chart = new Chart(ctx, {
