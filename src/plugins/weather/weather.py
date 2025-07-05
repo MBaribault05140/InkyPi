@@ -24,6 +24,8 @@ class Weather(BasePlugin):
         station_id = settings.get("stationId") or STATION_ID
         api_key = settings.get("bearerToken") or API_KEY
         air_quality_api_key = settings.get("airQualityApiKey") or AIR_QUALITY_API_KEY
+        logger.info(f"Using Tempest API Key: {api_key}")
+        logger.info(f"Using Air Quality API Key: {air_quality_api_key}")
         weather_data = self.get_weather_data(api_key, station_id)
         location = weather_data.get("location", {})
         lat = location.get("latitude")
