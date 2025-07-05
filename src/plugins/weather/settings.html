@@ -68,9 +68,12 @@
             document.getElementById('locationName').value = pluginSettings.locationName || '';
             document.getElementById('stationId').value = pluginSettings.stationId || '39534';
 
-            document.getElementById('style').value = pluginSettings.style || 'no-frame';
+            document.getElementById('style').value = (pluginSettings.style !== undefined && pluginSettings.style !== null && pluginSettings.style !== '') ? pluginSettings.style : 'no-frame';
+            console.log("Loaded style:", pluginSettings.style);
             document.getElementById('backgroundColor').value = pluginSettings.backgroundColor || '#000000';
             document.getElementById('textColor').value = pluginSettings.textColor || '#ffffff';
+            console.log("Loaded background color:", pluginSettings.backgroundColor);
+            console.log("Loaded text color:", pluginSettings.textColor);
         } else {
             // set default values
             document.getElementById('units').value = "imperial";

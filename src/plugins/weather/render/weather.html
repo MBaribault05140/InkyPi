@@ -2,6 +2,12 @@
 {% extends "plugin.html" %}
 
 {% block content %}
+<style>
+  .weather-dashboard {
+    background-color: {{ plugin_settings.backgroundColor }};
+    color: {{ plugin_settings.textColor }};
+  }
+</style>
 <div class="weather-dashboard">
   <!-- Current Date -->
   <div class="header">
