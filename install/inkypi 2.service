@@ -1,0 +1,19 @@
+[Unit]
+Description=InkyPi App
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+RuntimeDirectory=inkypi
+WorkingDirectory=/run/inkypi
+ExecStart=/usr/local/bin/inkypi -d
+Restart=on-failure
+RestartSec=15
+KillSignal=SIGINT
+StandardOutput=journal
+StandardError=journal
+Environment="PROJECT_DIR=/path/to/project"
+
+[Install]
+WantedBy=multi-user.target

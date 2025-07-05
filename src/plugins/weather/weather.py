@@ -1,4 +1,3 @@
-
 import requests
 from datetime import datetime, timezone
 import pytz
@@ -35,6 +34,7 @@ class Weather(BasePlugin):
         timezone_str = device_config.get_config("timezone", default="America/New_York")
         tz = pytz.timezone(timezone_str)
         template_params = self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz)
+        template_params["custom_location_name"] = settings.get("locationName") or template_params["location"]
         template_params["plugin_settings"] = settings
 
         image = self.render_image(dimensions, "weather.html", "weather.css", template_params)
@@ -76,7 +76,7 @@ class Weather(BasePlugin):
 
         data = {
             "current_date": dt.strftime("%A, %B %d – %-I:%M %p"),
-            "location": "Washington, DC",
+            "location": "Washington, DC",  # fallback name
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
             "current_temperature": str(round(current.get("air_temperature", 0))),
             "feels_like": str(round(current.get("feels_like", current.get("air_temperature", 0)))),
