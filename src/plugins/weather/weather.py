@@ -41,7 +41,7 @@ class Weather(BasePlugin):
         template_params['style_settings'] = True
         return template_params
 
-    def generate_image(self, settings, device_config):
+    def generate_image(self, settings, device_config, current_dt=None):
         station_id = settings.get("stationId").strip() if settings.get("stationId") else STATION_ID
         api_key = settings.get("bearerToken").strip() if settings.get("bearerToken") else API_KEY
         logger.info(f"Loaded bearerToken from settings: {settings.get('bearerToken')}")
@@ -62,7 +62,7 @@ class Weather(BasePlugin):
 
         timezone_str = device_config.get_config("timezone", default="America/New_York")
         tz = pytz.timezone(timezone_str)
-        template_params = self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz)
+        template_params = self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz, current_dt)
         template_params["custom_location_name"] = settings.get("locationName") or template_params["location"]
         template_params["style"] = settings.get("style", "no-frame")
         template_params["backgroundColor"] = settings.get("backgroundColor", "#000000")
@@ -129,10 +129,10 @@ class Weather(BasePlugin):
                 return visibility / 1609.34  # meters to miles
         return 10  # fallback if visibility missing
 
-    def parse_weather_data(self, weather_data, aqi_data, visibility_miles, tz):
+    def parse_weather_data(self, weather_data, aqi_data, visibility_miles, tz, current_dt=None):
         current = weather_data.get("current_conditions", {})
         daily = weather_data.get("forecast", {}).get("daily", [])
-        dt = datetime.now(tz)
+        dt = current_dt or datetime.now(tz)
         current_icon = current.get("icon", "default")
 
         obs_data = self.get_station_observation_data(STATION_ID, API_KEY)

@@ -75,16 +75,15 @@ class RefreshTask:
                     from datetime import datetime, timedelta
 
                     interval_seconds = self.device_config.get_config("scheduler_sleep_time")
-                    interval_minutes = interval_seconds // 60
                     now = datetime.now().replace(second=0, microsecond=0)
-                    # Align the time to the nearest past interval boundary
-                    seconds_since_hour = now.minute * 60 + now.second
-                    last_interval_seconds = (seconds_since_hour // interval_seconds) * interval_seconds
-                    last_time = now.replace(minute=0, second=0) + timedelta(seconds=last_interval_seconds)
-                    # Add interval to get the next absolute aligned time
-                    next_time = last_time + timedelta(seconds=interval_seconds)
-                    # sleep_seconds = (next_time - datetime.now()).total_seconds()
+                    seconds_since_epoch = now.timestamp()
+                    remainder = seconds_since_epoch % interval_seconds
+                    if remainder == 0:
+                        next_time = now
+                    else:
+                        next_time = now + timedelta(seconds=(interval_seconds - remainder))
                     sleep_seconds = (next_time - datetime.now()).total_seconds()
+                    logger.info(f"Sleeping until next interval: {next_time.strftime('%Y-%m-%d %H:%M:%S')} | sleep_seconds: {round(sleep_seconds)}")
                     self.condition.wait(timeout=sleep_seconds)
                     self.refresh_result = {}
                     self.refresh_event.clear()
