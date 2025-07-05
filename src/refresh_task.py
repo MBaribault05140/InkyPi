@@ -104,6 +104,7 @@ class RefreshTask:
                         self.manual_update_request = ()
                     else:
                         # handle refresh based on playlists
+                        logger.info(f"Aligned datetime for refresh: {current_dt.isoformat()}")
                         logger.info(f"Running interval refresh check. | current_time: {current_dt.strftime('%Y-%m-%d %H:%M:%S')}")
                         playlist, plugin_instance = self._determine_next_plugin(playlist_manager, latest_refresh, current_dt)
                         if plugin_instance:
@@ -113,6 +114,7 @@ class RefreshTask:
                         plugin_config = self.device_config.get_plugin(refresh_action.get_plugin_id())
                         plugin = get_plugin_instance(plugin_config)
                         image = refresh_action.execute(plugin, self.device_config, current_dt)
+                        logger.info(f"Image generated for: {current_dt.isoformat()}")
                         image_hash = compute_image_hash(image)
 
                         refresh_info = refresh_action.get_refresh_info()
@@ -152,9 +154,13 @@ class RefreshTask:
             logger.warn("Background refresh task is not running, unable to do a manual update")
 
     def _get_current_datetime(self):
-        """Retrieves the current datetime based on the device's configured timezone."""
+        """Retrieves the aligned current datetime based on the device's configured timezone and scheduler interval."""
         tz_str = self.device_config.get_config("timezone", default="UTC")
-        return datetime.now(pytz.timezone(tz_str))
+        interval = self.device_config.get_config("scheduler_sleep_time", default=300)
+        now = datetime.now(pytz.timezone(tz_str)).replace(second=0, microsecond=0)
+        seconds_since_epoch = int(now.timestamp())
+        aligned_timestamp = seconds_since_epoch - (seconds_since_epoch % interval)
+        return datetime.fromtimestamp(aligned_timestamp, tz=pytz.timezone(tz_str))
 
     def _determine_next_plugin(self, playlist_manager, latest_refresh_info, current_dt):
         """Determines the next plugin to refresh based on the active playlist, plugin cycle interval, and current time."""

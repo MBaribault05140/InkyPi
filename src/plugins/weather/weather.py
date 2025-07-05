@@ -63,7 +63,14 @@ class Weather(BasePlugin):
         timezone_str = device_config.get_config("timezone", default="America/New_York")
         tz = pytz.timezone(timezone_str)
         template_params = {}
-        template_params["timestamp_override"] = current_dt.strftime("%A, %B %d – %-I:%M %p") if current_dt else None
+        if current_dt:
+            aligned_time = current_dt.strftime("%A, %B %d – %-I:%M %p")
+            logger.info(f"Using aligned current_dt for timestamp: {aligned_time}")
+            template_params["timestamp_override"] = aligned_time
+        else:
+            now_time = datetime.now(tz).strftime("%A, %B %d – %-I:%M %p")
+            logger.info(f"No current_dt provided, using now: {now_time}")
+            template_params["timestamp_override"] = now_time
         template_params.update(self.parse_weather_data(weather_data, aqi_data, visibility_miles, tz, current_dt, template_params))
         template_params["custom_location_name"] = settings.get("locationName") or template_params["location"]
         template_params["style"] = settings.get("style", "no-frame")

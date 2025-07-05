@@ -36,7 +36,7 @@ class BasePlugin:
     def __init__(self, config, **dependencies):
         self.config = config
 
-    def generate_image(self, settings, device_config):
+    def generate_image(self, settings, device_config, current_dt=None):
         raise NotImplementedError("generate_image must be implemented by subclasses")
 
     def get_plugin_id(self):
