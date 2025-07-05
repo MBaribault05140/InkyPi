@@ -67,7 +67,17 @@ class Weather(BasePlugin):
         if not 200 <= response.status_code < 300:
             logger.error(f"Failed to retrieve air quality data: {response.content}")
             raise RuntimeError("Failed to retrieve air quality data.")
-        return response.json()
+
+        try:
+            data = response.json()
+            if "list" in data and data["list"]:
+                return data
+            else:
+                logger.warning("Air quality data missing 'list' or list is empty.")
+                return {"list": [{}]}  # prevents index errors downstream
+        except Exception as e:
+            logger.exception("Error parsing air quality JSON:")
+            return {"list": [{}]}
 
     def get_current_weather_visibility(self, lat, lon, api_key):
         url = CURRENT_WEATHER_URL.format(lat=lat, lon=lon, api_key=api_key)
