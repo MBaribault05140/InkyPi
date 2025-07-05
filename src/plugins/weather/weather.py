@@ -16,6 +16,21 @@ CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?lat={lat}&
 STATION_INFO_URL = "https://swd.weatherflow.com/swd/rest/stations?station_id={station_id}&api_key={api_key}"
 
 class Weather(BasePlugin):
+    def get_observed_temp_and_feels_like(self, station_id, api_key):
+        url = f"https://swd.weatherflow.com/swd/rest/observations/station/{station_id}?api_key={api_key}"
+        try:
+            response = requests.get(url)
+            if response.ok:
+                data = response.json()
+                obs = data.get("obs", [])
+                if obs and len(obs[0]) >= 20:
+                    air_temp = obs[0][7]
+                    feels_like = obs[0][19]
+                    return air_temp, feels_like
+            logger.warning("Failed to retrieve observed temperature or feels like from observations API.")
+        except Exception as e:
+            logger.exception("Error fetching observations data")
+        return None, None
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
         template_params['style_settings'] = True
@@ -115,12 +130,16 @@ class Weather(BasePlugin):
         dt = datetime.fromtimestamp(current.get("time", 0), tz=timezone.utc).astimezone(tz)
         current_icon = current.get("icon", "default")
 
+        obs_temp, obs_feels = self.get_observed_temp_and_feels_like(STATION_ID, API_KEY)
+        current_temperature = obs_temp if obs_temp is not None else current.get("air_temperature", 0)
+        feels_like = obs_feels if obs_feels is not None else current.get("feels_like", current.get("air_temperature", 0))
+
         data = {
             "current_date": dt.strftime("%A, %B %d – %-I:%M %p"),
             "location": "Washington, DC",  # fallback name
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
-            "current_temperature": str(round(current.get("air_temperature", 0))),
-            "feels_like": str(round(current.get("feels_like", current.get("air_temperature", 0)))),
+            "current_temperature": str(round(current_temperature)),
+            "feels_like": str(round(feels_like)),
             "temperature_unit": "°F",
             "units": "imperial",
             "forecast": self.parse_forecast(daily, tz),
