@@ -87,13 +87,6 @@ class Weather(BasePlugin):
             "data_points": self.parse_data_points(current, daily, aqi_data, visibility_miles, tz)
         }
 
-        # Extract High/Low Temperature from the forecast and include it in the data
-        if daily:
-            today = daily[0]  # Today's forecast (first item in the daily list)
-            high = round(today.get("air_temp_high", 0))
-            low = round(today.get("air_temp_low", 0))
-            data["high_low_temperature"] = f"High: {high}°F / Low: {low}°F"  # Add this to the data dictionary
-
         return data
 
     def parse_forecast(self, daily_forecast, tz):
@@ -141,7 +134,6 @@ class Weather(BasePlugin):
                     "icon": self.get_plugin_dir('icons/sunset.png')
                 })
 
-        # Add data points for wind, humidity, pressure, UV, visibility, and air quality
         if current.get("wind_avg") is not None:
             data_points.append({
                 "label": "Wind",
@@ -187,8 +179,8 @@ class Weather(BasePlugin):
         if aqi:
             data_points.append({
                 "label": "Air Quality",
-                "measurement": aqi_labels[aqi - 1],
-                "unit": "",
+                "measurement": aqi,
+                "unit": aqi_labels[aqi - 1],
                 "icon": self.get_plugin_dir('icons/aqi.png')
             })
 

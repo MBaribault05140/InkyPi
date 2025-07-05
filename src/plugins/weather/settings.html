@@ -24,11 +24,6 @@
 </div>
 
 <div class="form-group">
-    <label for="locationName" class="form-label">Location Name:</label>
-    <input type="text" id="locationName" name="locationName" class="form-input" />
-</div>
-
-<div class="form-group">
     <label for="displayMetrics" class="form-label">Display: </label>
     <div class="form-group">
         <input type="checkbox" id="displayMetrics" name="displayMetrics" onclick="this.value=this.checked ? 'true' : 'false';">
@@ -96,7 +91,7 @@
         });
         
         $closeMap.addEventListener('click', () => {
-            const position = marker.getLatLng();
+            const position = marker.getLatLng().wrap();
             $latitude.value = position.lat;
             $longitude.value = position.lng;
             closeModal('mapModal');
@@ -118,8 +113,6 @@
             document.getElementById('displayForecast').value = pluginSettings.displayForecast;
 
             document.getElementById('forecastDays').value = pluginSettings.forecastDays;
-
-            document.getElementById('locationName').value = pluginSettings.locationName || '';
         } else {
             // set default values
             document.getElementById('units').value = "imperial";
@@ -131,9 +124,7 @@
             document.getElementById('displayForecast').checked = true;
             document.getElementById('displayForecast').value = "true";
 
-            document.getElementById('forecastDays').value = 7;
-
-            document.getElementById('locationName').value = '';
+            document.getElementById('forecastDays').value = 7
         }
     });
 </script>

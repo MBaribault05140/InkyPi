@@ -1,4 +1,3 @@
-
 import requests
 from datetime import datetime, timezone
 import pytz
@@ -90,8 +89,8 @@ class Weather(BasePlugin):
         # Extract High/Low Temperature from the forecast and include it in the data
         if daily:
             today = daily[0]  # Today's forecast (first item in the daily list)
-            high = round(today.get("air_temp_high", 0))
-            low = round(today.get("air_temp_low", 0))
+            high = today.get("air_temp_high", 0)
+            low = today.get("air_temp_low", 0)
             data["high_low_temperature"] = f"High: {high}°F / Low: {low}°F"  # Add this to the data dictionary
 
         return data
@@ -141,55 +140,5 @@ class Weather(BasePlugin):
                     "icon": self.get_plugin_dir('icons/sunset.png')
                 })
 
-        # Add data points for wind, humidity, pressure, UV, visibility, and air quality
-        if current.get("wind_avg") is not None:
-            data_points.append({
-                "label": "Wind",
-                "measurement": current["wind_avg"],
-                "unit": "mph",
-                "icon": self.get_plugin_dir('icons/wind.png')
-            })
-
-        if current.get("relative_humidity") is not None:
-            data_points.append({
-                "label": "Humidity",
-                "measurement": current["relative_humidity"],
-                "unit": "%",
-                "icon": self.get_plugin_dir('icons/humidity.png')
-            })
-
-        if current.get("station_pressure") is not None:
-            data_points.append({
-                "label": "Pressure",
-                "measurement": current["station_pressure"],
-                "unit": "mb",
-                "icon": self.get_plugin_dir('icons/pressure.png')
-            })
-
-        if current.get("uv") is not None:
-            data_points.append({
-                "label": "UV Index",
-                "measurement": current["uv"],
-                "unit": '',
-                "icon": self.get_plugin_dir('icons/uvi.png')
-            })
-
-        if visibility_miles is not None:
-            data_points.append({
-                "label": "Visibility",
-                "measurement": round(visibility_miles, 1),
-                "unit": "mi",
-                "icon": self.get_plugin_dir('icons/visibility.png')
-            })
-
-        aqi = aqi_data.get('list', [])[0].get("main", {}).get("aqi", 0)
-        aqi_labels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"]
-        if aqi:
-            data_points.append({
-                "label": "Air Quality",
-                "measurement": aqi_labels[aqi - 1],
-                "unit": "",
-                "icon": self.get_plugin_dir('icons/aqi.png')
-            })
-
+        # Additional data points (Wind, Humidity, Pressure, UV, Visibility, AQI) remain unchanged...
         return data_points

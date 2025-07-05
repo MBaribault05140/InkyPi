@@ -28,13 +28,14 @@ from blueprints.playlist import playlist_bp
 from jinja2 import ChoiceLoader, FileSystemLoader
 from plugins.plugin_registry import load_plugins
 
+
 logger = logging.getLogger(__name__)
 
 logger.info("Starting web server")
 app = Flask(__name__)
 template_dirs = [
-    os.path.join(os.path.dirname(__file__), "templates"),    # Default template folder
-    os.path.join(os.path.dirname(__file__), "plugins"),        # Plugin templates
+   os.path.join(os.path.dirname(__file__), "templates"),    # Default template folder
+   os.path.join(os.path.dirname(__file__), "plugins"),      # Plugin templates
 ]
 app.jinja_loader = ChoiceLoader([FileSystemLoader(directory) for directory in template_dirs])
 
@@ -62,31 +63,16 @@ if __name__ == '__main__':
     if not is_running_from_reloader():
         refresh_task.start()
 
-    # display default InkyPi image on startup
+    # display default inkypi image on startup
     if device_config.get_config("startup") is True:
         logger.info("Startup flag is set, displaying startup image")
         img = generate_startup_image(device_config.get_resolution())
         display_manager.display_image(img)
         device_config.update_value("startup", False, write=True)
 
-    # Fetch weather data at startup using the WeatherFlow API
-    # Make sure your tempest_weather.py module is set up correctly
-    from tempest_weather import get_weather
-    weather_data = get_weather()
-    if weather_data:
-        observations = weather_data.get("obs", [])
-        if observations:
-            # Adjust the key below if your JSON structure differs
-            temperature = observations[0].get("air_temperature")
-            logger.info("Current Temperature: %s °C", temperature)
-        else:
-            logger.warning("No observation data available from the API.")
-    else:
-        logger.error("Failed to retrieve weather data from WeatherFlow API.")
-
     try:
         # Run the Flask app
-        app.secret_key = str(random.randint(100000, 999999))
+        app.secret_key = str(random.randint(100000,999999))
         app.run(host="0.0.0.0", port=80)
     finally:
         refresh_task.stop()
