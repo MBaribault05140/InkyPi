@@ -132,13 +132,14 @@ class Weather(BasePlugin):
     def parse_weather_data(self, weather_data, aqi_data, visibility_miles, tz):
         current = weather_data.get("current_conditions", {})
         daily = weather_data.get("forecast", {}).get("daily", [])
-        dt = datetime.fromtimestamp(current.get("time", 0), tz=timezone.utc).astimezone(tz)
+        dt = datetime.now(tz)
         current_icon = current.get("icon", "default")
 
         obs_data = self.get_station_observation_data(STATION_ID, API_KEY)
         current_temperature = obs_data.get("air_temperature", current.get("air_temperature", 0))
         feels_like = obs_data.get("feels_like", current.get("feels_like", current_temperature))
 
+        # Use actual current time to prevent displaying the stale forecast time
         data = {
             "current_date": dt.strftime("%A, %B %d – %-I:%M %p"),
             "location": "Washington, DC",  # fallback name
