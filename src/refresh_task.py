@@ -72,10 +72,18 @@ class RefreshTask:
         while True:
             try:
                 with self.condition:
-                    sleep_time = self.device_config.get_config("scheduler_sleep_time")
+                    from datetime import datetime, timedelta
 
-                    # Wait for sleep_time or until notified
-                    self.condition.wait(timeout=sleep_time)
+                    interval_seconds = self.device_config.get_config("scheduler_sleep_time")
+                    interval_minutes = interval_seconds // 60
+                    now = datetime.now()
+                    next_minute = (now.minute // interval_minutes + 1) * interval_minutes
+                    if next_minute >= 60:
+                        next_time = now.replace(hour=(now.hour + 1) % 24, minute=0, second=0, microsecond=0)
+                    else:
+                        next_time = now.replace(minute=next_minute, second=0, microsecond=0)
+                    sleep_seconds = (next_time - now).total_seconds()
+                    self.condition.wait(timeout=sleep_seconds)
                     self.refresh_result = {}
                     self.refresh_event.clear()
 
