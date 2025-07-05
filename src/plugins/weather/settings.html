@@ -68,6 +68,8 @@
             document.getElementById('locationName').value = pluginSettings.locationName || '';
             document.getElementById('stationId').value = pluginSettings.stationId || '39534';
 
+            document.getElementById('bearerToken').value = pluginSettings.bearerToken || 'YOUR_DEFAULT_TOKEN_HERE';
+
             document.getElementById('style').value = (pluginSettings.style !== undefined && pluginSettings.style !== null && pluginSettings.style !== '') ? pluginSettings.style : 'no-frame';
             console.log("Loaded style:", pluginSettings.style);
             document.getElementById('backgroundColor').value = pluginSettings.backgroundColor || '#000000';
@@ -89,6 +91,8 @@
 
             document.getElementById('locationName').value = '';
             document.getElementById('stationId').value = '39534';
+
+            document.getElementById('bearerToken').value = 'YOUR_DEFAULT_TOKEN_HERE';
 
             document.getElementById('style').value = 'no-frame';
             document.getElementById('backgroundColor').value = '#000000';

@@ -21,8 +21,9 @@ class Weather(BasePlugin):
         return template_params
 
     def generate_image(self, settings, device_config):
-        station_id = settings.get("stationId", STATION_ID)
-        weather_data = self.get_weather_data(API_KEY, station_id)
+        station_id = settings.get("stationId") or STATION_ID
+        api_key = settings.get("bearerToken") or API_KEY
+        weather_data = self.get_weather_data(api_key, station_id)
         location = weather_data.get("location", {})
         lat = location.get("latitude")
         lon = location.get("longitude")
@@ -48,8 +49,8 @@ class Weather(BasePlugin):
             raise RuntimeError("Failed to take screenshot, please check logs.")
         return image
 
-    def get_weather_data(self, api_key, station_id):
-        url = WEATHER_URL.format(station_id=station_id, api_key=api_key)
+    def get_weather_data(self, bearer_token, station_id):
+        url = WEATHER_URL.format(station_id=station_id, api_key=bearer_token)
         response = requests.get(url)
         if not 200 <= response.status_code < 300:
             logger.error(f"Failed to retrieve weather data: {response.content}")
