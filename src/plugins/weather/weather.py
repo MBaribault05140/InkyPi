@@ -33,9 +33,10 @@ class Weather(BasePlugin):
                 data = response.json()
                 obs = data.get("obs", [])
                 if obs and isinstance(obs[0], dict):
+                    c_to_f = lambda c: round((c * 9 / 5) + 32, 1)
                     return {
-                        "air_temperature": obs[0].get("air_temperature"),
-                        "feels_like": obs[0].get("feels_like"),
+                        "air_temperature": c_to_f(obs[0].get("air_temperature", 0)),
+                        "feels_like": c_to_f(obs[0].get("feels_like", 0)),
                         "station_pressure": obs[0].get("station_pressure"),
                         "wind_avg": obs[0].get("wind_avg")
                     }
