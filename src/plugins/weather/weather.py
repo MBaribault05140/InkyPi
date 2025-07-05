@@ -23,6 +23,7 @@ class Weather(BasePlugin):
     def generate_image(self, settings, device_config):
         station_id = settings.get("stationId") or STATION_ID
         api_key = settings.get("bearerToken") or API_KEY
+        logger.info(f"Loaded bearerToken from settings: {settings.get('bearerToken')}")
         air_quality_api_key = settings.get("airQualityApiKey") or AIR_QUALITY_API_KEY
         logger.info(f"Using Tempest API Key: {api_key}")
         logger.info(f"Using Air Quality API Key: {air_quality_api_key}")
