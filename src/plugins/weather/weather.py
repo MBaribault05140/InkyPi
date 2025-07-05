@@ -17,7 +17,7 @@ STATION_INFO_URL = "https://swd.weatherflow.com/swd/rest/stations?station_id={st
 
 class Weather(BasePlugin):
     def get_station_observation_data(self, station_id, api_key):
-        url = f"https://swd.weatherflow.com/swd/rest/observations/station/{station_id}?api_key={api_key}"
+        url = f"https://swd.weatherflow.com/swd/rest/observations/station/{station_id}?units=imperial&api_key={api_key}"
         try:
             response = requests.get(url)
             from datetime import datetime
