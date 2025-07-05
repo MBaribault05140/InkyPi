@@ -13,6 +13,7 @@ AIR_QUALITY_API_KEY = "44927775ca927b99ec49364e9a19023e"
 WEATHER_URL = "https://swd.weatherflow.com/swd/rest/better_forecast?station_id={station_id}&units_temp=f&units_wind=mph&units_pressure=mb&units_precip=in&units_distance=mi&api_key={api_key}"
 AIR_QUALITY_URL = "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={api_key}"
 CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=imperial"
+STATION_INFO_URL = "https://swd.weatherflow.com/swd/rest/stations?station_id={station_id}&api_key={api_key}"
 
 class Weather(BasePlugin):
     def generate_settings_template(self):
@@ -28,9 +29,9 @@ class Weather(BasePlugin):
         logger.info(f"Using Tempest API Key: {api_key}")
         logger.info(f"Using Air Quality API Key: {air_quality_api_key}")
         weather_data = self.get_weather_data(api_key, station_id)
-        location = weather_data.get("location", {})
-        lat = location.get("latitude")
-        lon = location.get("longitude")
+        lat, lon = self.get_station_coordinates(station_id, api_key)
+        if lat is None or lon is None:
+            raise RuntimeError("Missing latitude or longitude from Tempest station metadata.")
 
         aqi_data = self.get_air_quality_data(lat, lon, air_quality_api_key)
         visibility_miles = self.get_current_weather_visibility(lat, lon, air_quality_api_key)
@@ -52,6 +53,23 @@ class Weather(BasePlugin):
         if not image:
             raise RuntimeError("Failed to take screenshot, please check logs.")
         return image
+
+    def get_station_coordinates(self, station_id, api_key):
+        url = STATION_INFO_URL.format(station_id=station_id, api_key=api_key)
+        response = requests.get(url)
+        if not response.ok:
+            logger.error(f"Failed to retrieve station metadata: {response.status_code} {response.text}")
+            return None, None
+        try:
+            data = response.json()
+            stations = data.get("stations", [])
+            if stations:
+                lat = stations[0].get("latitude")
+                lon = stations[0].get("longitude")
+                return lat, lon
+        except Exception as e:
+            logger.exception("Error parsing station metadata JSON")
+        return None, None
 
     def get_weather_data(self, bearer_token, station_id):
         url = WEATHER_URL.format(station_id=station_id, api_key=bearer_token)
