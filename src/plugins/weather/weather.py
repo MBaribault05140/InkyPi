@@ -23,7 +23,8 @@ class Weather(BasePlugin):
         return template_params
 
     def generate_image(self, settings, device_config):
-        weather_data = self.get_weather_data(API_KEY, STATION_ID)
+        station_id = settings.get("stationId", STATION_ID)
+        weather_data = self.get_weather_data(API_KEY, station_id)
         aqi_data = self.get_air_quality_data(AIR_QUALITY_API_KEY)
         visibility_miles = self.get_current_weather_visibility(AIR_QUALITY_API_KEY)
 
