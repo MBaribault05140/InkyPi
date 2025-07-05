@@ -2,8 +2,6 @@ import requests
 from datetime import datetime, timezone
 import pytz
 import logging
-from pathlib import Path
-import time
 from plugins.base_plugin.base_plugin import BasePlugin
 
 logger = logging.getLogger(__name__)
@@ -58,13 +56,6 @@ class Weather(BasePlugin):
     def get_weather_data(self, bearer_token, station_id):
         url = WEATHER_URL.format(station_id=station_id, api_key=bearer_token)
         response = requests.get(url)
-
-        # Write URL and response to file
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = Path(__file__).parent
-        with open(output_path / f"tempest_call_{timestamp}.txt", "w") as f:
-            f.write(f"URL: {url}\n\nResponse:\n{response.text}")
-
         if not 200 <= response.status_code < 300:
             logger.error(f"Failed to retrieve weather data: {response.content}")
             raise RuntimeError("Failed to retrieve weather data.")
@@ -74,13 +65,6 @@ class Weather(BasePlugin):
         url = AIR_QUALITY_URL.format(lat=lat, lon=lon, api_key=api_key)
         logger.info(f"Calling air quality API: {url}")
         response = requests.get(url)
-
-        # Write URL and response to file
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = Path(__file__).parent
-        with open(output_path / f"air_quality_call_{timestamp}.txt", "w") as f:
-            f.write(f"URL: {url}\n\nResponse:\n{response.text}")
-
         logger.info(f"Air quality API raw response: {response.text}")
         if not 200 <= response.status_code < 300:
             logger.error(f"Air Quality API failed. Status: {response.status_code}, Response: {response.text}")
