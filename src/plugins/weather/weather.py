@@ -148,9 +148,9 @@ class Weather(BasePlugin):
         current_temperature = obs_data.get("air_temperature", current.get("air_temperature", 0))
         feels_like = obs_data.get("feels_like", current.get("feels_like", current_temperature))
 
-        # Use actual current time to prevent displaying the stale forecast time
+        # Use scheduler-aligned timestamp for the current_date label
         data = {
-            "current_date": current_dt.strftime("%A, %B %d – %-I:%M %p") if current_dt else dt.strftime("%A, %B %d – %-I:%M %p"),
+            "current_date": template_params.get("timestamp_override", dt.strftime("%A, %B %d – %-I:%M %p")),
             "location": "Washington, DC",  # fallback name
             "current_day_icon": self.get_plugin_dir(f"icons/{current_icon}.png"),
             "current_temperature": str(round(current_temperature)),
